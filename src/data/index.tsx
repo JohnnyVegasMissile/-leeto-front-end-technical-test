@@ -1,4 +1,3 @@
-// fct that get gift cards list on http://localhost:3001/gift-cards using fetch
 import { APIURL } from "../constants";
 import GiftCard from "../types/GiftCard";
 

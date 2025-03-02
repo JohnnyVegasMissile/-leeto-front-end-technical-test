@@ -1,0 +1,5 @@
+@import "tailwindcss";
+
+@theme {
+  --color-leeto: #2e32be;
+}

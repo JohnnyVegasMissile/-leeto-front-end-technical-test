@@ -3,7 +3,7 @@ import TabBar from "../../components/TabBar";
 import { getGiftCards } from "../../data";
 import { useQuery } from "@tanstack/react-query";
 import GiftCard from "../../types/GiftCard";
-import { Link } from "react-router";
+import { Link, useSearchParams } from "react-router";
 import GiftCardItem from "../../components/GiftCard";
 
 type GiftCardGridProps = {
@@ -23,7 +23,11 @@ const GiftCardGrid = ({ items }: GiftCardGridProps) => {
 };
 
 const GiftCardList = () => {
-  const [activeTab, setActiveTab] = useState("active");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [activeTab, setActiveTab] = useState(
+    searchParams.get("state") === "archived" ? "archived" : "active"
+  );
+
   const query = useQuery({ queryKey: ["gift-cards"], queryFn: getGiftCards });
 
   const activeGiftCards = query.data?.filter(
@@ -32,6 +36,11 @@ const GiftCardList = () => {
   const archivedGiftCards = query.data?.filter(
     (giftCard) => giftCard.state === "archived"
   );
+
+  const onTabChange = (tab: string) => {
+    setActiveTab(tab);
+    setSearchParams({ state: tab });
+  };
 
   return (
     <div className="p-4 sm:p-10">
@@ -42,7 +51,7 @@ const GiftCardList = () => {
       {query.isFetched && (
         <TabBar
           activeTab={activeTab}
-          onTabChange={setActiveTab}
+          onTabChange={onTabChange}
           items={[
             {
               key: "active",

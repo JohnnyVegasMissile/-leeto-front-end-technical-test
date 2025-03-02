@@ -5,11 +5,11 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import "dayjs/locale/fr";
 import ProgressBar from "../../components/ProgressBar";
-import Card from "../../components/Card";
 import SquareIcon from "../../components/SquareIcon";
-import UserEmoji from "../../components/UserEmoji";
 import clsx from "clsx";
 import BackButton from "../../components/ButtonBack";
+import RightsHolderBlock from "./RightsHolderBlock";
+import ConsumptionBlock from "./ConsumptionBlock";
 dayjs.extend(relativeTime);
 
 type LabelWithIconProps = {
@@ -79,77 +79,8 @@ const GiftCardDetails = () => {
       </div>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 mt-6">
-        <Card>
-          <SquareIcon color="green" icon="familly" size="md" className="mb-4" />
-          <span className="font-medium text-base text-slate-800">
-            Quel(s) ayant(s)-droit validés bénéficient de cette cagnotte ?
-          </span>
-
-          <div className="flex flex-row gap-2 mt-4 items-center">
-            <div className="flex">
-              {detail.beneficiaries.map((beneficiary) => (
-                <UserEmoji type={beneficiary.type} className="-m-1" />
-              ))}
-            </div>
-
-            <span className="text-sm text-slate-600">
-              {detail.beneficiaries.map((beneficiary, idx) => {
-                let prefix = "";
-                if (
-                  idx === detail.beneficiaries.length - 1 &&
-                  detail.beneficiaries.length > 1
-                ) {
-                  prefix = " et ";
-                } else if (idx > 0) {
-                  prefix = ", ";
-                }
-
-                if (beneficiary.type === "user") {
-                  return prefix + "Vous-même";
-                } else {
-                  return prefix + beneficiary.firstName;
-                }
-              })}
-              {` ${detail.beneficiaries.length > 1 ? "sont" : "êtes"} éligibles.`}
-            </span>
-          </div>
-        </Card>
-
-        <Card>
-          <SquareIcon color="green" icon="chart" size="md" className="mb-4" />
-          <span className="font-medium text-base text-slate-800">
-            Suivi de consommation
-          </span>
-          <div className=" inline md:grid md:grid-cols-2 gap-4">
-            {detail.beneficiaries.map((beneficiary, idx) => (
-              <div
-                key={beneficiary.id}
-                className={clsx("flex flex-row items-center gap-2 mt-4", {
-                  "col-span-2": idx === 0,
-                })}
-              >
-                <UserEmoji type={beneficiary.type} />
-
-                <div className="flex-1">
-                  <div className="text-sm text-slate-600">
-                    {beneficiary.type === "user"
-                      ? "Vous-même"
-                      : beneficiary.firstName}
-                    {` · ${beneficiary.consumption.consumedAmount} € / ${beneficiary.consumption.allowedAmount} €`}
-                  </div>
-
-                  <ProgressBar
-                    percent={
-                      (beneficiary.consumption.consumedAmount /
-                        beneficiary.consumption.allowedAmount) *
-                      100
-                    }
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
-        </Card>
+        <RightsHolderBlock beneficiaries={detail.beneficiaries} />
+        <ConsumptionBlock beneficiaries={detail.beneficiaries} />
       </div>
     </div>
   );
